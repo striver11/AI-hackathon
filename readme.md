@@ -282,3 +282,26 @@ AI-Powered:                         Non-AI:
 - Varying query patterns            • Pre-defined metrics
 - User exploration                  • Standard reports
 - Flexibility needed                • Speed critical
+
+
+ongoing claims
+total quoted policies
+total issued policies
+
+
+policy distrution:
+according to the market
+
+calim overview
+
+
+select
+middle market
+national program
+national account
+public sector
+
+
+policy type
+gc- guarenteed cost
+ls- loss sensitive

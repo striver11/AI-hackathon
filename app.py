@@ -49,6 +49,7 @@ st.markdown("""
         color: white;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin: 0.5rem 0;
+        text-align: center;
     }
     
     .metric-card h3 {
@@ -61,6 +62,30 @@ st.markdown("""
         margin: 0.5rem 0 0 0;
         font-size: 0.9rem;
         opacity: 0.9;
+    }
+    
+    .metric-card-green {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .metric-card-blue {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .metric-card-orange {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+    
+    .metric-card-purple {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .metric-card-pink {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .metric-card-teal {
+        background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
     }
     
     /* Sidebar styling */
@@ -104,17 +129,6 @@ st.markdown("""
         border-radius: 5px;
         margin: 1rem 0;
     }
-    
-    /* SQL code block */
-    .sql-block {
-        background-color: #282c34;
-        color: #61dafb;
-        padding: 1rem;
-        border-radius: 10px;
-        font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-        margin: 1rem 0;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -137,7 +151,7 @@ with st.sidebar:
     
     page = st.radio(
         "",
-        ["🏠 Dashboard", "💬 Query Assistant", "📊 Database Schema", "📈 Analytics"],
+        ["🏠 Dashboard", "💬 Query Assistant", "📈 Dynamic Analytics"],
         label_visibility="collapsed"
     )
     
@@ -148,9 +162,22 @@ with st.sidebar:
     
     **Query Assistant**: Ask questions in plain English
     
-    **Database Schema**: View table structures
+    **Dynamic Analytics**: Generate custom charts and reports
+    """)
     
-    **Analytics**: Pre-built reports and insights
+    st.markdown("---")
+    st.markdown("### 💼 Market Types")
+    st.markdown("""
+    • Middle Market
+    • National Program
+    • National Account
+    • Public Sector
+    """)
+    
+    st.markdown("### 📋 Policy Types")
+    st.markdown("""
+    • **GC**: Guaranteed Cost
+    • **LS**: Loss Sensitive
     """)
     
     st.markdown("---")
@@ -158,8 +185,8 @@ with st.sidebar:
     st.info(f"**Database**: SQLite\n**Model**: Gemini 2.5 Flash")
 
 # Main content
-st.markdown('<p class="main-header">🔍 Smart Data Analytics Assistant</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Query your insurance database using natural language - No SQL required!</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">🔍 Smart Insurance Analytics</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-header">AI-Powered Insurance Data Analytics Platform</p>', unsafe_allow_html=True)
 
 # PAGE 1: DASHBOARD
 if page == "🏠 Dashboard":
@@ -168,12 +195,12 @@ if page == "🏠 Dashboard":
     # Get quick stats
     stats = agents['analytics'].get_quick_stats()
     
-    # Display metrics in cards
-    col1, col2, col3, col4 = st.columns(4)
+    # Display metrics in cards - Row 1
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         st.markdown(f"""
-        <div class="metric-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="metric-card metric-card-purple">
             <h3>{stats.get('total_customers', 0):,}</h3>
             <p>👥 Total Customers</p>
         </div>
@@ -181,7 +208,7 @@ if page == "🏠 Dashboard":
     
     with col2:
         st.markdown(f"""
-        <div class="metric-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <div class="metric-card metric-card-blue">
             <h3>{stats.get('active_policies', 0):,}</h3>
             <p>📋 Active Policies</p>
         </div>
@@ -189,40 +216,81 @@ if page == "🏠 Dashboard":
     
     with col3:
         st.markdown(f"""
-        <div class="metric-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-            <h3>${stats.get('total_premium', 0):,.2f}</h3>
+        <div class="metric-card metric-card-green">
+            <h3>${stats.get('total_premium', 0):,.0f}</h3>
             <p>💰 Total Premium Revenue</p>
         </div>
         """, unsafe_allow_html=True)
     
-    with col4:
+    # Display metrics in cards - Row 2
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
         st.markdown(f"""
-        <div class="metric-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-            <h3>{stats.get('total_claims', 0):,}</h3>
-            <p>📝 Total Claims</p>
+        <div class="metric-card metric-card-orange">
+            <h3>{stats.get('ongoing_claims', 0):,}</h3>
+            <p>⏳ Ongoing Claims</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card metric-card-pink">
+            <h3>{stats.get('total_quoted_policies', 0):,}</h3>
+            <p>📄 Total Quoted Policies</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown(f"""
+        <div class="metric-card metric-card-teal">
+            <h3>{stats.get('total_issued_policies', 0):,}</h3>
+            <p>✅ Total Issued Policies</p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Charts
+    # Charts - Row 1
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 📊 Policy Distribution")
-        policy_dist = agents['analytics'].get_policy_distribution()
-        if not policy_dist.empty:
+        st.markdown("### 📊 Distribution by Market Type")
+        market_dist = agents['analytics'].get_market_distribution()
+        if not market_dist.empty:
             fig = px.pie(
-                policy_dist, 
+                market_dist, 
                 values='count', 
-                names='policy_type',
+                names='market_type',
                 hole=0.4,
                 color_discrete_sequence=px.colors.qualitative.Set3
             )
             fig.update_layout(height=400)
             st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No market data available")
     
     with col2:
+        st.markdown("### 📋 Distribution by Policy Type")
+        policy_dist = agents['analytics'].get_policy_type_distribution()
+        if not policy_dist.empty:
+            fig = px.bar(
+                policy_dist,
+                x='policy_type_name',
+                y='total_premium',
+                color='count',
+                labels={'policy_type_name': 'Policy Type', 'total_premium': 'Total Premium ($)'},
+                color_continuous_scale='Blues'
+            )
+            fig.update_layout(height=400)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No policy type data available")
+    
+    # Charts - Row 2
+    col1, col2 = st.columns(2)
+    
+    with col1:
         st.markdown("### 🏆 Top Performing Agents")
         top_agents = agents['analytics'].get_top_agents()
         if not top_agents.empty:
@@ -231,26 +299,60 @@ if page == "🏠 Dashboard":
                 x='name',
                 y='total_premium',
                 color='total_policies',
-                color_continuous_scale='Blues'
+                labels={'name': 'Agent', 'total_premium': 'Total Premium ($)'},
+                color_continuous_scale='Viridis'
             )
             fig.update_layout(height=400, xaxis_title="Agent", yaxis_title="Total Premium ($)")
             st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No agent data available")
     
-    # Claims summary
-    st.markdown("### 📋 Claims Overview")
-    claims_summary = agents['analytics'].get_claims_summary()
-    if not claims_summary.empty:
-        col1, col2 = st.columns([2, 1])
-        with col1:
+    with col2:
+        st.markdown("### 📋 Claims Overview")
+        claims_summary = agents['analytics'].get_claims_summary()
+        if not claims_summary.empty:
             fig = go.Figure(data=[
                 go.Bar(name='Requested', x=claims_summary['status'], y=claims_summary['total_requested']),
                 go.Bar(name='Approved', x=claims_summary['status'], y=claims_summary['total_approved'])
             ])
-            fig.update_layout(barmode='group', height=350)
+            fig.update_layout(barmode='group', height=400)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.info("No claims data available")
+    
+    # Ongoing Claims Summary
+    st.markdown("### ⏳ Ongoing Claims Status")
+    ongoing_summary = agents['analytics'].get_ongoing_claims_summary()
+    if not ongoing_summary.empty:
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            fig = px.bar(
+                ongoing_summary,
+                x='current_status',
+                y='total_amount',
+                color='count',
+                labels={'current_status': 'Status', 'total_amount': 'Total Amount ($)'},
+                color_continuous_scale='Reds'
+            )
+            fig.update_layout(height=350)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            st.dataframe(claims_summary, use_container_width=True, height=350)
+            st.dataframe(ongoing_summary, use_container_width=True, height=350)
+    else:
+        st.info("No ongoing claims data available")
+    
+    # Quote Conversion Metrics
+    st.markdown("### 📈 Quote Conversion Metrics")
+    conversion = agents['analytics'].get_quote_conversion_metrics()
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total Quotes", conversion.get('total_quotes', 0))
+    with col2:
+        st.metric("Accepted Quotes", conversion.get('accepted_quotes', 0))
+    with col3:
+        st.metric("Conversion Rate", f"{conversion.get('conversion_rate', 0)}%")
 
 # PAGE 2: QUERY ASSISTANT
 elif page == "💬 Query Assistant":
@@ -262,41 +364,50 @@ elif page == "💬 Query Assistant":
         
         with col1:
             st.markdown("""
-            **Customer Queries:**
-            - How many customers are from California?
-            - Show all customers with their emails
-            - List customers who are over 40 years old
+            **Customer & Policy Queries:**
+            - How many customers are in each state?
+            - Show all Middle Market policies
+            - List National Account customers with premiums over $100k
+            - Which customers have both GC and LS policies?
             
-            **Policy Queries:**
-            - Show all active life insurance policies
-            - What is the average premium amount?
-            - List policies expiring in 2024
+            **Market Analysis:**
+            - What is the total premium by market type?
+            - Show average premium for Public Sector
+            - Compare GC vs LS policy counts
+            - Which market has the highest claim ratio?
             
             **Claims Queries:**
-            - Show all pending claims
-            - What is the total approved claim amount?
-            - List customers with claims over $5000
+            - Show all ongoing claims with amounts over $100k
+            - List pending claims by customer
+            - What's the total claim exposure?
+            - Show claims by adjuster
             """)
         
         with col2:
             st.markdown("""
-            **Agent Queries:**
-            - Which agent has sold the most policies?
-            - Show all active agents
-            - List agents with commission rates above 5%
+            **Agent Performance:**
+            - Which agent has the most policies?
+            - Show agents ranked by total premium
+            - List agents handling Public Sector accounts
+            
+            **Quote & Issuance:**
+            - Show all pending quotes
+            - What's the quote acceptance rate by market?
+            - List recently issued policies
+            - Show quotes that expired without acceptance
             
             **Complex Queries:**
-            - Show customers who have filed claims
-            - List agents with their total policy count
-            - Display customers with multiple policy types
-            - Which customers have both auto and health insurance?
+            - Show customers with ongoing claims and their policies
+            - Compare premium vs claims by market type
+            - List agents with National Account clients
+            - Show policy issuance trends by month
             """)
     
     # Query input
     st.markdown("### 🔍 Ask Your Question")
     question = st.text_area(
         "",
-        placeholder="e.g., Show me all customers from Texas who have life insurance policies",
+        placeholder="e.g., Show me all Middle Market policies with premiums over $50,000",
         height=100,
         label_visibility="collapsed"
     )
@@ -357,157 +468,168 @@ elif page == "💬 Query Assistant":
     elif submit:
         st.warning("⚠️ Please enter a question first!")
 
-# PAGE 3: DATABASE SCHEMA
-elif page == "📊 Database Schema":
-    st.markdown("## 📊 Database Schema Explorer")
+# PAGE 3: DYNAMIC ANALYTICS
+elif page == "📈 Dynamic Analytics":
+    st.markdown("## 📈 Dynamic Analytics Generator")
     
-    tables = agents['db'].get_tables()
+    st.markdown("""
+    <div class="info-box">
+        <strong>💡 How it works:</strong> Describe the analysis you want, and AI will generate 
+        the SQL query, fetch the data, and create visualizations automatically!
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Table selector
-    selected_table = st.selectbox("🔍 Select a table to explore", tables)
+    # Analytics request input
+    st.markdown("### 🎯 What analysis would you like to see?")
     
-    if selected_table:
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            st.markdown(f"### 📋 Schema: {selected_table.upper()}")
-            schema_df = agents['db'].get_table_schema(selected_table)
-            st.dataframe(schema_df, use_container_width=True)
-        
-        with col2:
-            row_count = agents['db'].get_row_count(selected_table)
-            st.markdown(f"""
-            <div class="metric-card">
-                <h3>{row_count:,}</h3>
-                <p>Total Rows</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown(f"### 👀 Sample Data from {selected_table.upper()}")
-        sample_data = agents['db'].get_sample_data(selected_table, limit=10)
-        st.dataframe(sample_data, use_container_width=True)
+    # Quick options
+    col1, col2, col3 = st.columns(3)
     
-    # Database statistics
-    st.markdown("### 📈 Database Statistics")
-    db_stats = agents['db'].get_database_stats()
+    with col1:
+        if st.button("📊 Premium by Market Type", use_container_width=True):
+            st.session_state.analytics_request = "Show total premium amount grouped by market type"
     
-    stats_df = pd.DataFrame(db_stats['tables'])
-    fig = px.bar(
-        stats_df,
-        x='name',
-        y='row_count',
-        title='Records per Table',
-        color='row_count',
-        color_continuous_scale='Viridis'
+    with col2:
+        if st.button("📋 Policy Distribution", use_container_width=True):
+            st.session_state.analytics_request = "Show count of policies by market type and policy type"
+    
+    with col3:
+        if st.button("⚠️ Claim Risk Assessment", use_container_width=True):
+            st.session_state.analytics_request = "Show total claim amount vs total premium by market type to assess risk"
+    
+    # More options
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("🏆 Agent Performance", use_container_width=True):
+            st.session_state.analytics_request = "Show agents with their total policies and premium amount ranked by premium"
+    
+    with col2:
+        if st.button("📈 Quote Conversion", use_container_width=True):
+            st.session_state.analytics_request = "Show quote conversion rate by market type with counts and percentages"
+    
+    with col3:
+        if st.button("⏳ Ongoing Claims Analysis", use_container_width=True):
+            st.session_state.analytics_request = "Show ongoing claims grouped by status with total amounts"
+    
+    st.markdown("---")
+    
+    # Custom request
+    analytics_request = st.text_area(
+        "Or describe your custom analysis:",
+        value=st.session_state.get('analytics_request', ''),
+        placeholder="e.g., Show me the average premium amount by policy type for each market segment",
+        height=100
     )
-    st.plotly_chart(fig, use_container_width=True)
-
-# PAGE 4: ANALYTICS
-elif page == "📈 Analytics":
-    st.markdown("## 📈 Advanced Analytics & Reports")
     
-    tab1, tab2, tab3 = st.tabs(["💰 Revenue Analysis", "📋 Policy Insights", "⚠️ Risk Assessment"])
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        generate = st.button("🎨 Generate Analytics", use_container_width=True)
     
-    with tab1:
-        st.markdown("### 💰 Revenue & Premium Analysis")
-        
-        query = """
-        SELECT 
-            p.policy_type,
-            COUNT(*) as policy_count,
-            SUM(p.premium_amount) as total_premium,
-            AVG(p.premium_amount) as avg_premium,
-            SUM(p.coverage_amount) as total_coverage
-        FROM policies p
-        WHERE p.status = 'Active'
-        GROUP BY p.policy_type
-        ORDER BY total_premium DESC
-        """
-        
-        results, columns = agents['db'].execute_query(query)
-        df = pd.DataFrame(results, columns=columns)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            fig = px.bar(
-                df,
-                x='policy_type',
-                y='total_premium',
-                title='Total Premium by Policy Type',
-                color='total_premium',
-                color_continuous_scale='Blues'
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        
-        with col2:
-            fig = px.scatter(
-                df,
-                x='policy_count',
-                y='avg_premium',
-                size='total_coverage',
-                color='policy_type',
-                title='Policy Count vs Average Premium'
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        
-        st.dataframe(df, use_container_width=True)
+    if generate and analytics_request:
+        with st.spinner("🔮 Generating analytics..."):
+            try:
+                # Generate SQL for analytics
+                sql_query = agents['sql'].generate_analytics_sql(analytics_request)
+                
+                # Display generated SQL
+                with st.expander("📝 View Generated SQL Query"):
+                    st.code(sql_query, language="sql")
+                
+                # Execute query
+                with st.spinner("⚙️ Fetching data..."):
+                    results, columns = agents['db'].execute_query(sql_query)
+                
+                if results and len(results) > 0:
+                    df = pd.DataFrame(results, columns=columns)
+                    
+                    st.markdown("### 📊 Analysis Results")
+                    
+                    # Display data table
+                    st.dataframe(df, use_container_width=True)
+                    
+                    # Auto-generate appropriate visualization
+                    st.markdown("### 📈 Visualization")
+                    
+                    # Determine chart type based on data structure
+                    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+                    categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+                    
+                    if len(numeric_cols) >= 1 and len(categorical_cols) >= 1:
+                        # Create appropriate chart
+                        if len(df) <= 10:  # Bar chart for small datasets
+                            fig = px.bar(
+                                df,
+                                x=categorical_cols[0],
+                                y=numeric_cols[0],
+                                color=numeric_cols[0] if len(numeric_cols) == 1 else numeric_cols[1],
+                                title=analytics_request,
+                                color_continuous_scale='Viridis'
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                            
+                            # Add pie chart if only one numeric column
+                            if len(numeric_cols) == 1:
+                                fig2 = px.pie(
+                                    df,
+                                    values=numeric_cols[0],
+                                    names=categorical_cols[0],
+                                    title=f"Distribution of {numeric_cols[0]}"
+                                )
+                                st.plotly_chart(fig2, use_container_width=True)
+                        
+                        elif len(numeric_cols) >= 2:  # Grouped bar for multiple metrics
+                            # Melt dataframe for grouped bars
+                            fig = go.Figure()
+                            for col in numeric_cols:
+                                fig.add_trace(go.Bar(
+                                    x=df[categorical_cols[0]],
+                                    y=df[col],
+                                    name=col
+                                ))
+                            fig.update_layout(
+                                barmode='group',
+                                title=analytics_request,
+                                height=500
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                    
+                    elif len(numeric_cols) >= 2:  # Scatter plot for numeric comparisons
+                        fig = px.scatter(
+                            df,
+                            x=numeric_cols[0],
+                            y=numeric_cols[1],
+                            size=numeric_cols[1] if len(numeric_cols) > 1 else None,
+                            title=analytics_request,
+                            labels={numeric_cols[0]: numeric_cols[0].replace('_', ' ').title(),
+                                   numeric_cols[1]: numeric_cols[1].replace('_', ' ').title()}
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Download option
+                    csv = df.to_csv(index=False)
+                    st.download_button(
+                        label="📥 Download Analysis as CSV",
+                        data=csv,
+                        file_name="analytics_results.csv",
+                        mime="text/csv"
+                    )
+                    
+                    st.success(f"✅ Analysis complete! Generated insights from {len(results)} data points")
+                
+                else:
+                    st.warning("⚠️ No data found for this analysis. Try a different query.")
+                    
+            except Exception as e:
+                st.error(f"❌ Error generating analytics: {str(e)}")
+                st.info("💡 Try rephrasing your request or use one of the quick options above.")
     
-    with tab2:
-        st.markdown("### 📋 Policy Distribution & Trends")
-        
-        query = """
-        SELECT 
-            c.state,
-            COUNT(p.policy_id) as total_policies,
-            SUM(p.premium_amount) as total_premium
-        FROM customers c
-        JOIN policies p ON c.customer_id = p.customer_id
-        WHERE p.status = 'Active'
-        GROUP BY c.state
-        ORDER BY total_policies DESC
-        LIMIT 10
-        """
-        
-        results, columns = agents['db'].execute_query(query)
-        df = pd.DataFrame(results, columns=columns)
-        
-        fig = px.treemap(
-            df,
-            path=['state'],
-            values='total_policies',
-            color='total_premium',
-            title='Policies by State'
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    elif generate:
+        st.warning("⚠️ Please describe the analysis you want!")
     
-    with tab3:
-        st.markdown("### ⚠️ Claims Risk Assessment")
-        
-        query = """
-        SELECT 
-            p.policy_type,
-            COUNT(cl.claim_id) as total_claims,
-            SUM(cl.claim_amount) as total_claim_amount,
-            SUM(cl.approved_amount) as total_approved,
-            ROUND(100.0 * SUM(cl.approved_amount) / SUM(cl.claim_amount), 2) as approval_rate
-        FROM policies p
-        LEFT JOIN claims cl ON p.policy_id = cl.policy_id
-        WHERE cl.claim_id IS NOT NULL
-        GROUP BY p.policy_type
-        """
-        
-        results, columns = agents['db'].execute_query(query)
-        df = pd.DataFrame(results, columns=columns)
-        
-        fig = go.Figure(data=[
-            go.Bar(name='Claimed', x=df['policy_type'], y=df['total_claim_amount']),
-            go.Bar(name='Approved', x=df['policy_type'], y=df['total_approved'])
-        ])
-        fig.update_layout(barmode='group', title='Claim Amount vs Approved Amount by Policy Type')
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.dataframe(df, use_container_width=True)
+    # Clear session state if needed
+    if 'analytics_request' in st.session_state and not analytics_request:
+        del st.session_state.analytics_request
 
 # Footer
 st.markdown("---")
