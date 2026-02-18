@@ -128,6 +128,7 @@ st.markdown("""
         padding: 1rem;
         border-radius: 5px;
         margin: 1rem 0;
+        color: black;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -145,8 +146,19 @@ def init_agents():
 agents = init_agents()
 
 # Sidebar
+# In app.py, update the sidebar section:
+
 with st.sidebar:
-    st.image("https://img.icons8.com/clouds/200/database.png", width=150)
+    # Add company logo
+    st.markdown("""
+        <div style='text-align: center; padding: 1rem 0;'>
+            <img src='https://img.icons8.com/clouds/200/analytics.png' width='120'/>
+            <h2 style='color: #1f77b4; margin: 0.5rem 0; font-size: 2rem;'>InsightIQ</h2>
+            <p style='color: #666; font-size: 0.9rem; margin: 0; font-size: 1.2rem'>Insurance Analytics</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
     st.markdown("### 🎯 Navigation")
     
     page = st.radio(
@@ -154,6 +166,8 @@ with st.sidebar:
         ["🏠 Dashboard", "💬 Query Assistant", "📈 Dynamic Analytics"],
         label_visibility="collapsed"
     )
+    
+    # ... rest of sidebar code
     
     st.markdown("---")
     st.markdown("### 📚 Quick Guide")
