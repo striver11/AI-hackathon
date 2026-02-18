@@ -40,12 +40,12 @@ class SchemaAgent:
         relationships = """
 TABLE RELATIONSHIPS:
 
-customers ← policies (customer_id)
+account ← policies (account_id)
 agents ← policies (agent_id)
 policies ← claims (policy_id)
-customers ← claims (customer_id)
+account ← claims (account_id)
 policies ← payments (policy_id)
-customers ← payments (customer_id)
+account ← payments (account_id)
 """
         return relationships
     

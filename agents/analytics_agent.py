@@ -15,9 +15,9 @@ class AnalyticsAgent:
         stats = {}
         
         try:
-            # Total customers
-            result, _ = self.db_agent.execute_query("SELECT COUNT(*) FROM customers")
-            stats['total_customers'] = result[0][0]
+            # Total accounts
+            result, _ = self.db_agent.execute_query("SELECT COUNT(*) FROM account")
+            stats['total_accounts'] = result[0][0]
             
             # Total active policies
             result, _ = self.db_agent.execute_query("SELECT COUNT(*) FROM policies WHERE status='Active'")

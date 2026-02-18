@@ -174,8 +174,8 @@ if page == "🏠 Dashboard":
     with col1:
         st.markdown(f"""
         <div class="metric-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-            <h3>{stats.get('total_customers', 0):,}</h3>
-            <p>👥 Total Customers</p>
+            <h3>{stats.get('total_accounts', 0):,}</h3>
+            <p>👥 Total Accounts</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -262,10 +262,10 @@ elif page == "💬 Query Assistant":
         
         with col1:
             st.markdown("""
-            **Customer Queries:**
-            - How many customers are from California?
-            - Show all customers with their emails
-            - List customers who are over 40 years old
+            **Account Queries:**
+            - How many accounts are from California?
+            - Show all accounts with their emails
+            - List accounts who are over 40 years old
             
             **Policy Queries:**
             - Show all active life insurance policies
@@ -275,7 +275,7 @@ elif page == "💬 Query Assistant":
             **Claims Queries:**
             - Show all pending claims
             - What is the total approved claim amount?
-            - List customers with claims over $5000
+            - List accounts with claims over $5000
             """)
         
         with col2:
@@ -286,17 +286,17 @@ elif page == "💬 Query Assistant":
             - List agents with commission rates above 5%
             
             **Complex Queries:**
-            - Show customers who have filed claims
+            - Show accounts who have filed claims
             - List agents with their total policy count
-            - Display customers with multiple policy types
-            - Which customers have both auto and health insurance?
+            - Display accounts with multiple policy types
+            - Which accounts have both auto and health insurance?
             """)
     
     # Query input
     st.markdown("### 🔍 Ask Your Question")
     question = st.text_area(
         "",
-        placeholder="e.g., Show me all customers from Texas who have life insurance policies",
+        placeholder="e.g., Show me all accounts from Texas who have life insurance policies",
         height=100,
         label_visibility="collapsed"
     )
@@ -461,8 +461,8 @@ elif page == "📈 Analytics":
             c.state,
             COUNT(p.policy_id) as total_policies,
             SUM(p.premium_amount) as total_premium
-        FROM customers c
-        JOIN policies p ON c.customer_id = p.customer_id
+        FROM account c
+        JOIN policies p ON c.account_id = p.account_id
         WHERE p.status = 'Active'
         GROUP BY c.state
         ORDER BY total_policies DESC

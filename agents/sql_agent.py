@@ -31,17 +31,17 @@ IMPORTANT RULES:
 
 EXAMPLE QUERIES:
 
-Question: "How many customers are there?"
-SQL: SELECT COUNT(*) as total_customers FROM customers
+Question: "How many accounts are there?"
+SQL: SELECT COUNT(*) as total_accounts FROM account
 
-Question: "Show all active policies with customer names"
-SQL: SELECT c.name, p.policy_type, p.premium_amount, p.coverage_amount FROM customers c JOIN policies p ON c.customer_id = p.customer_id WHERE p.status = 'Active'
+Question: "Show all active policies with account names"
+SQL: SELECT c.name, p.policy_type, p.premium_amount, p.coverage_amount FROM account c JOIN policies p ON c.account_id = p.account_id WHERE p.status = 'Active'
 
 Question: "Which agent has sold the most policies?"
 SQL: SELECT a.name, COUNT(p.policy_id) as total_policies FROM agents a JOIN policies p ON a.agent_id = p.agent_id GROUP BY a.name ORDER BY total_policies DESC LIMIT 1
 
-Question: "Show customers with total claim amounts"
-SQL: SELECT c.name, SUM(cl.claim_amount) as total_claims FROM customers c JOIN claims cl ON c.customer_id = cl.customer_id GROUP BY c.name
+Question: "Show accounts with total claim amounts"
+SQL: SELECT c.name, SUM(cl.claim_amount) as total_claims FROM account c JOIN claims cl ON c.account_id = cl.account_id GROUP BY c.name
 
 Now convert this question to SQL:
 Question: "{question}"

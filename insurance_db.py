@@ -20,17 +20,17 @@ print("\n[1/6] Dropping existing tables (if any)...")
 cursor.execute('DROP TABLE IF EXISTS claims')
 cursor.execute('DROP TABLE IF EXISTS payments')
 cursor.execute('DROP TABLE IF EXISTS policies')
-cursor.execute('DROP TABLE IF EXISTS customers')
+cursor.execute('DROP TABLE IF EXISTS account')
 cursor.execute('DROP TABLE IF EXISTS agents')
 print("✓ Existing tables dropped")
 
 ## Create Tables
 print("\n[2/6] Creating database schema...")
 
-# 1. CUSTOMERS table
+# 1. ACCOUNTS table
 cursor.execute('''
-CREATE TABLE customers (
-    customer_id INTEGER PRIMARY KEY,
+CREATE TABLE account (
+    account_id INTEGER PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100),
     phone VARCHAR(15),
@@ -42,7 +42,7 @@ CREATE TABLE customers (
     gender VARCHAR(10)
 )
 ''')
-print("✓ Created CUSTOMERS table")
+print("✓ Created ACCOUNTS table")
 
 # 2. AGENTS table
 cursor.execute('''
@@ -63,7 +63,7 @@ print("✓ Created AGENTS table")
 cursor.execute('''
 CREATE TABLE policies (
     policy_id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
+    account_id INTEGER,
     agent_id INTEGER,
     policy_type VARCHAR(50),
     policy_number VARCHAR(50),
@@ -72,7 +72,7 @@ CREATE TABLE policies (
     premium_amount DECIMAL(10,2),
     coverage_amount DECIMAL(12,2),
     status VARCHAR(20),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (account_id) REFERENCES account(account_id),
     FOREIGN KEY (agent_id) REFERENCES agents(agent_id)
 )
 ''')
@@ -83,7 +83,7 @@ cursor.execute('''
 CREATE TABLE claims (
     claim_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     claim_number VARCHAR(50),
     claim_date DATE,
     claim_amount DECIMAL(10,2),
@@ -92,7 +92,7 @@ CREATE TABLE claims (
     status VARCHAR(20),
     settlement_date DATE,
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created CLAIMS table")
@@ -102,13 +102,13 @@ cursor.execute('''
 CREATE TABLE payments (
     payment_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     payment_date DATE,
     amount DECIMAL(10,2),
     payment_method VARCHAR(30),
     status VARCHAR(20),
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created PAYMENTS table")
@@ -116,8 +116,8 @@ print("✓ Created PAYMENTS table")
 ## Insert Sample Data
 print("\n[3/6] Inserting sample data...")
 
-# Insert Customers
-customers_data = [
+# Insert Accounts
+accounts_data = [
     (1, 'John Smith', 'john.smith@email.com', '555-0101', '123 Main St', 'New York', 'NY', '10001', '1985-03-15', 'Male'),
     (2, 'Sarah Johnson', 'sarah.j@email.com', '555-0102', '456 Oak Ave', 'Los Angeles', 'CA', '90001', '1990-07-22', 'Female'),
     (3, 'Michael Brown', 'michael.b@email.com', '555-0103', '789 Pine Rd', 'Chicago', 'IL', '60601', '1978-11-30', 'Male'),
@@ -135,8 +135,8 @@ customers_data = [
     (15, 'Matthew Lewis', 'matthew.l@email.com', '555-0115', '753 Birch Lane', 'Indianapolis', 'IN', '46201', '1984-08-30', 'Male')
 ]
 
-cursor.executemany('INSERT INTO customers VALUES (?,?,?,?,?,?,?,?,?,?)', customers_data)
-print(f"✓ Inserted {len(customers_data)} customers")
+cursor.executemany('INSERT INTO account VALUES (?,?,?,?,?,?,?,?,?,?)', accounts_data)
+print(f"✓ Inserted {len(accounts_data)} accounts")
 
 # Insert Agents
 agents_data = [
@@ -239,9 +239,9 @@ print("DATABASE SUMMARY")
 print("="*70)
 
 # Table counts
-cursor.execute("SELECT COUNT(*) FROM customers")
-customers_count = cursor.fetchone()[0]
-print(f"📊 Total Customers:       {customers_count:>4}")
+cursor.execute("SELECT COUNT(*) FROM account")
+accounts_count = cursor.fetchone()[0]
+print(f"📊 Total Accounts:       {accounts_count:>4}")
 
 cursor.execute("SELECT COUNT(*) FROM agents")
 agents_count = cursor.fetchone()[0]
@@ -263,17 +263,17 @@ print("\n" + "="*70)
 print("SAMPLE DATA PREVIEW")
 print("="*70)
 
-# Customers by state
-print("\n📍 Customers by State:")
+# Accounts by state
+print("\n📍 Accounts by State:")
 cursor.execute("""
     SELECT state, COUNT(*) as count 
-    FROM customers 
+    FROM account 
     GROUP BY state 
     ORDER BY count DESC 
     LIMIT 5
 """)
 for row in cursor.fetchall():
-    print(f"   {row[0]}: {row[1]} customers")
+    print(f"   {row[0]}: {row[1]} accounts")
 
 # Policy types distribution
 print("\n📊 Policy Distribution:")
@@ -333,15 +333,15 @@ print("[6/6] Verification Queries")
 print("="*70)
 
 # Sample complex query
-print("\n🔍 Sample Query - Customers with Active Policies and Claims:")
+print("\n🔍 Sample Query - Accounts with Active Policies and Claims:")
 cursor.execute("""
     SELECT 
         c.name, 
         p.policy_type, 
         p.premium_amount,
         COUNT(cl.claim_id) as claim_count
-    FROM customers c
-    JOIN policies p ON c.customer_id = p.customer_id
+    FROM account c
+    JOIN policies p ON c.account_id = p.account_id
     LEFT JOIN claims cl ON p.policy_id = cl.policy_id
     WHERE p.status = 'Active'
     GROUP BY c.name, p.policy_type, p.premium_amount
@@ -350,7 +350,7 @@ cursor.execute("""
 """)
 results = cursor.fetchall()
 if results:
-    print(f"\n{'Customer Name':<20} {'Policy Type':<20} {'Premium':<12} {'Claims'}")
+    print(f"\n{'Account Name':<20} {'Policy Type':<20} {'Premium':<12} {'Claims'}")
     print("-" * 70)
     for row in results:
         print(f"{row[0]:<20} {row[1]:<20} ${row[2]:<11,.2f} {row[3]}")
