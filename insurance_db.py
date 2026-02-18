@@ -21,7 +21,7 @@ print("\n[1/7] Dropping existing tables (if any)...")
 cursor.execute('DROP TABLE IF EXISTS claims')
 cursor.execute('DROP TABLE IF EXISTS payments')
 cursor.execute('DROP TABLE IF EXISTS policies')
-cursor.execute('DROP TABLE IF EXISTS customers')
+cursor.execute('DROP TABLE IF EXISTS account')
 cursor.execute('DROP TABLE IF EXISTS agents')
 cursor.execute('DROP TABLE IF EXISTS ongoing_claims')
 cursor.execute('DROP TABLE IF EXISTS quoted_policies')
@@ -31,10 +31,10 @@ print("✓ Existing tables dropped")
 ## Create Tables
 print("\n[2/7] Creating database schema...")
 
-# 1. CUSTOMERS table
+# 1. ACCOUNTS table (renamed from customers)
 cursor.execute('''
-CREATE TABLE customers (
-    customer_id INTEGER PRIMARY KEY,
+CREATE TABLE account (
+    account_id INTEGER PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100),
     phone VARCHAR(15),
@@ -46,7 +46,7 @@ CREATE TABLE customers (
     gender VARCHAR(10)
 )
 ''')
-print("✓ Created CUSTOMERS table")
+print("✓ Created ACCOUNTS table")
 
 # 2. AGENTS table
 cursor.execute('''
@@ -67,7 +67,7 @@ print("✓ Created AGENTS table")
 cursor.execute('''
 CREATE TABLE policies (
     policy_id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
+    account_id INTEGER,
     agent_id INTEGER,
     market_type VARCHAR(50),
     policy_type VARCHAR(50),
@@ -77,7 +77,7 @@ CREATE TABLE policies (
     premium_amount DECIMAL(10,2),
     coverage_amount DECIMAL(12,2),
     status VARCHAR(20),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (account_id) REFERENCES account(account_id),
     FOREIGN KEY (agent_id) REFERENCES agents(agent_id)
 )
 ''')
@@ -88,7 +88,7 @@ cursor.execute('''
 CREATE TABLE claims (
     claim_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     claim_number VARCHAR(50),
     claim_date DATE,
     claim_amount DECIMAL(10,2),
@@ -97,7 +97,7 @@ CREATE TABLE claims (
     status VARCHAR(20),
     settlement_date DATE,
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created CLAIMS table")
@@ -107,13 +107,13 @@ cursor.execute('''
 CREATE TABLE payments (
     payment_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     payment_date DATE,
     amount DECIMAL(10,2),
     payment_method VARCHAR(30),
     status VARCHAR(20),
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created PAYMENTS table")
@@ -123,7 +123,7 @@ cursor.execute('''
 CREATE TABLE ongoing_claims (
     ongoing_claim_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     claim_number VARCHAR(50),
     claim_date DATE,
     claim_amount DECIMAL(10,2),
@@ -131,7 +131,7 @@ CREATE TABLE ongoing_claims (
     assigned_adjuster VARCHAR(100),
     last_update_date DATE,
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created ONGOING_CLAIMS table")
@@ -140,7 +140,7 @@ print("✓ Created ONGOING_CLAIMS table")
 cursor.execute('''
 CREATE TABLE quoted_policies (
     quote_id INTEGER PRIMARY KEY,
-    customer_id INTEGER,
+    account_id INTEGER,
     agent_id INTEGER,
     market_type VARCHAR(50),
     policy_type VARCHAR(50),
@@ -150,7 +150,7 @@ CREATE TABLE quoted_policies (
     quoted_coverage DECIMAL(12,2),
     quote_status VARCHAR(20),
     expiry_date DATE,
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    FOREIGN KEY (account_id) REFERENCES account(account_id),
     FOREIGN KEY (agent_id) REFERENCES agents(agent_id)
 )
 ''')
@@ -161,13 +161,13 @@ cursor.execute('''
 CREATE TABLE issued_policies (
     issue_id INTEGER PRIMARY KEY,
     policy_id INTEGER,
-    customer_id INTEGER,
+    account_id INTEGER,
     issue_date DATE,
     issued_by VARCHAR(100),
     delivery_method VARCHAR(50),
     confirmation_number VARCHAR(50),
     FOREIGN KEY (policy_id) REFERENCES policies(policy_id),
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (account_id) REFERENCES account(account_id)
 )
 ''')
 print("✓ Created ISSUED_POLICIES table")
@@ -175,8 +175,8 @@ print("✓ Created ISSUED_POLICIES table")
 ## Insert Sample Data
 print("\n[3/7] Inserting sample data...")
 
-# Insert Customers (20 customers)
-customers_data = [
+# Insert Accounts (20 accounts)
+accounts_data = [
     (1, 'Acme Corporation', 'contact@acmecorp.com', '555-0101', '123 Business Ave', 'New York', 'NY', '10001', '1990-03-15', 'Corporate'),
     (2, 'TechStart Inc', 'info@techstart.com', '555-0102', '456 Innovation Dr', 'San Francisco', 'CA', '94102', '1995-07-22', 'Corporate'),
     (3, 'Global Manufacturing Ltd', 'contact@globalmfg.com', '555-0103', '789 Industrial Rd', 'Chicago', 'IL', '60601', '1985-11-30', 'Corporate'),
@@ -199,8 +199,8 @@ customers_data = [
     (20, 'Transportation Department', 'info@transport.gov', '555-0120', '852 Transit Center', 'Washington', 'DC', '20001', '1960-01-10', 'Public')
 ]
 
-cursor.executemany('INSERT INTO customers VALUES (?,?,?,?,?,?,?,?,?,?)', customers_data)
-print(f"✓ Inserted {len(customers_data)} customers")
+cursor.executemany('INSERT INTO account VALUES (?,?,?,?,?,?,?,?,?,?)', accounts_data)
+print(f"✓ Inserted {len(accounts_data)} accounts")
 
 # Insert Agents
 agents_data = [
@@ -371,9 +371,9 @@ print("DATABASE SUMMARY")
 print("="*70)
 
 # Table counts
-cursor.execute("SELECT COUNT(*) FROM customers")
-customers_count = cursor.fetchone()[0]
-print(f"📊 Total Customers:           {customers_count:>4}")
+cursor.execute("SELECT COUNT(*) FROM account")
+accounts_count = cursor.fetchone()[0]
+print(f"📊 Total Accounts:           {accounts_count:>4}")
 
 cursor.execute("SELECT COUNT(*) FROM agents")
 agents_count = cursor.fetchone()[0]

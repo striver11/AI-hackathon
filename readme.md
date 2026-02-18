@@ -64,7 +64,7 @@ Natural Language Query Flow
                                   │
                     ┌─────────────▼─────────────┐
                     │  User types question:     │
-                    │  "Show customers from     │
+                    │  "Show accounts from      │
                     │   California with claims  │
                     │   over $5000"             │
                     └─────────────┬─────────────┘
@@ -77,10 +77,10 @@ Natural Language Query Flow
                     │   Schema Agent            │
                     │                           │
                     │   Provides:               │
-                    │   • customers(state)      │
+                    │   • accounts(state)       │
                     │   • claims(claim_amount)  │
                     │   • Relationship via      │
-                    │     customer_id           │
+                    │     account_id            │
                     └─────────────┬─────────────┘
                                   │
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -104,10 +104,10 @@ Natural Language Query Flow
                     │                           │
                     │   SELECT c.name,          │
                     │          cl.claim_amount  │
-                    │   FROM customers c        │
+                    │   FROM account c          │
                     │   JOIN claims cl          │
-                    │   ON c.customer_id =      │
-                    │      cl.customer_id       │
+                    │   ON c.account_id =       │
+                    │      cl.account_id        │
                     │   WHERE c.state = 'CA'    │
                     │   AND cl.claim_amount     │
                     │       > 5000              │
@@ -246,8 +246,8 @@ User Question
 │  Natural Language Queries       │  │  Dashboard Metrics      │
 │         │                       │  │         │               │
 │         ▼                       │  │         ▼               │
-│  User: "Show customers          │  │  SELECT COUNT(*)        │
-│         from Texas"             │  │  FROM customers         │
+│  User: "Show accounts           │  │  SELECT COUNT(*)        │
+│         from Texas"             │  │  FROM account          │
 │         │                       │  │         │               │
 │         ▼                       │  │         ▼               │
 │  Schema Context ───────┐        │  │  Direct Execution       │
@@ -257,7 +257,7 @@ User Question
 │         │                       │  │                         │
 │         ▼                       │  │  Schema Explorer        │
 │  SQL: SELECT * FROM             │  │         │               │
-│       customers                 │  │         ▼               │
+│       account                   │  │         ▼               │
 │       WHERE state='TX'          │  │  PRAGMA table_info()    │
 │         │                       │  │         │               │
 │         ▼                       │  │         ▼               │
