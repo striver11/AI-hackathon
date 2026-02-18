@@ -215,8 +215,8 @@ if page == "🏠 Dashboard":
     with col1:
         st.markdown(f"""
         <div class="metric-card metric-card-purple">
-            <h3>{stats.get('total_customers', 0):,}</h3>
-            <p>👥 Total Customers</p>
+            <h3>{stats.get('total_accounts', 0):,}</h3>
+            <p>👥 Total Accounts</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -378,11 +378,11 @@ elif page == "💬 Query Assistant":
         
         with col1:
             st.markdown("""
-            **Customer & Policy Queries:**
-            - How many customers are in each state?
+            **Account & Policy Queries:**
+            - How many accounts are in each state?
             - Show all Middle Market policies
-            - List National Account customers with premiums over $100k
-            - Which customers have both GC and LS policies?
+            - List National Account accounts with premiums over $100k
+            - Which accounts have both GC and LS policies?
             
             **Market Analysis:**
             - What is the total premium by market type?
@@ -392,7 +392,7 @@ elif page == "💬 Query Assistant":
             
             **Claims Queries:**
             - Show all ongoing claims with amounts over $100k
-            - List pending claims by customer
+            - List pending claims by account
             - What's the total claim exposure?
             - Show claims by adjuster
             """)
@@ -411,7 +411,7 @@ elif page == "💬 Query Assistant":
             - Show quotes that expired without acceptance
             
             **Complex Queries:**
-            - Show customers with ongoing claims and their policies
+            - Show accounts with ongoing claims and their policies
             - Compare premium vs claims by market type
             - List agents with National Account clients
             - Show policy issuance trends by month

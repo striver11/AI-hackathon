@@ -35,17 +35,17 @@ POLICY TYPES: GC (Guaranteed Cost), LS (Loss Sensitive)
 
 EXAMPLE QUERIES:
 
-Question: "How many customers are there?"
-SQL: SELECT COUNT(*) as total_customers FROM customers
+Question: "How many accounts are there?"
+SQL: SELECT COUNT(*) as total_accounts FROM account
 
 Question: "Show all active policies for Middle Market"
-SQL: SELECT c.name, p.market_type, p.policy_type, p.premium_amount FROM customers c JOIN policies p ON c.customer_id = p.customer_id WHERE p.status = 'Active' AND p.market_type = 'Middle Market'
+SQL: SELECT c.name, p.market_type, p.policy_type, p.premium_amount FROM account c JOIN policies p ON c.account_id = p.account_id WHERE p.status = 'Active' AND p.market_type = 'Middle Market'
 
 Question: "Which market type generates the most premium?"
 SQL: SELECT market_type, SUM(premium_amount) as total_premium FROM policies WHERE status='Active' GROUP BY market_type ORDER BY total_premium DESC LIMIT 1
 
-Question: "Show ongoing claims with customer names"
-SQL: SELECT c.name, oc.claim_number, oc.claim_amount, oc.current_status FROM customers c JOIN ongoing_claims oc ON c.customer_id = oc.customer_id
+Question: "Show ongoing claims with account names"
+SQL: SELECT c.name, oc.claim_number, oc.claim_amount, oc.current_status FROM account c JOIN ongoing_claims oc ON c.account_id = oc.account_id
 
 Question: "What's the quote conversion rate by market type?"
 SQL: SELECT market_type, COUNT(*) as total_quotes, SUM(CASE WHEN quote_status='Accepted' THEN 1 ELSE 0 END) as accepted, ROUND(SUM(CASE WHEN quote_status='Accepted' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) as conversion_rate FROM quoted_policies GROUP BY market_type
